@@ -29,6 +29,9 @@
     <ClInclude Include="Outils.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
+    <ClInclude Include="GraphesL3.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\FichiersCol\queen11_11.col">

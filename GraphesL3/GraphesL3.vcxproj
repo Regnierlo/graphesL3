@@ -80,6 +80,7 @@
     <ClCompile Include="Outils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="GraphesL3.h" />
     <ClInclude Include="Outils.h" />
   </ItemGroup>
   <ItemGroup>
