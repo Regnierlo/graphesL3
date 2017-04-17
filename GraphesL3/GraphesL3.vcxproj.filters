@@ -32,10 +32,10 @@
     <ClInclude Include="Outils.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GraphesL3.h">
+    <ClInclude Include="Dsatur.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Dsatur.h">
+    <ClInclude Include="GraphesL3.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>

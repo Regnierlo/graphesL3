@@ -167,4 +167,21 @@ vector<string> truncateString(string s, char delim)
 	return res;
 }
 
+void sauvegarderFichier(int* t, int size, string nameFile)
+{
+	string nomFichier = "..\\FichiersRes\\";
+	nomFichier += nameFile;
+	nomFichier += ".res";
 
+	ofstream fichier(nomFichier, ios::out | ios::trunc);
+
+	if (fichier)
+	{
+		fichier << "test fezze";
+		fichier.close();
+	}
+	else
+	{
+		cerr << "Impossible d'ouvrir le fichier !" << endl;
+	}
+}
