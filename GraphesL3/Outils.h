@@ -5,5 +5,5 @@
 
 using namespace std;
 
-void lireFichier(string nameFile);
+int** lireFichier(string nameFile, int quelTableau);
 vector<string> truncateString(string s, char delim);

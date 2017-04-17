@@ -76,10 +76,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Dsatur.cpp" />
     <ClCompile Include="GraphesL3.cpp" />
     <ClCompile Include="Outils.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Dsatur.h" />
     <ClInclude Include="Outils.h" />
   </ItemGroup>
   <ItemGroup>

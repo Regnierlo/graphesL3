@@ -1,9 +1,17 @@
 #include "Outils.h"
 
-void lireFichier(string nameFile)
+/*
+	// Fonction qui lit un fichier .col en entrée
+	/// récupère le nombre d'arêtes du graphe à tester
+	/// créé un tableau dynamique en deux dimensions d'entiers
+	//// retourne un tableau de taille n (n = le nombre d'arêtes du graphe) listant les sommets reliant chaque arête
+*/
+
+int** lireFichier(string nameFile, int quelTableau)
 {
 	ifstream fichier(nameFile, ios::in);  // on ouvre le fichier en lecture
-
+	
+	int** temp = NULL;
 	if (fichier)  // si l'ouverture a réussi
 	{
 		bool continuer = true;
@@ -33,7 +41,7 @@ void lireFichier(string nameFile)
 		int numLigne = 0;
 		char premier_caractere;
 
-		// --> Récupération du nombre d'arêtes du graphe
+		// --> Récupération du nombre d'arêtes du graphe : on cherche le début de ligne p et on regarde le quatrième mot
 		int i = 0;
 		do{
 			truncateS = truncateString(monTableau.at(i), ' '); // decoupe de la chaine
@@ -42,26 +50,72 @@ void lireFichier(string nameFile)
 		} while (premier_caractere != 'p');
 
 		std::string::size_type sz;
-		numLigne = std::stoi(truncateS.at(3), &sz);
 
-		// --> Création du tableau des arêtes
-		int **tab_aretes = new int*[numLigne]; // on initialise un tableau pouvant contenir le nombre d'arête
-		numLigne = 0; // On remet le compteur de ligne à 0;
-		
-		for (i ; i < monTableau.size(); i++)
+		switch (quelTableau)
 		{
-			truncateS = truncateString(monTableau.at(i), ' ');
-			tab_aretes[numLigne] = new int[2];
-			tab_aretes[numLigne][0] = std::stoi(truncateS.at(1), &sz);
-			tab_aretes[numLigne][1] = std::stoi(truncateS.at(2), &sz);
-			numLigne++;
-		}
-		for (int x = 0 ; x < numLigne; x++)
-		{
-			cout << "Sommet 1 : " << tab_aretes[x][0] << " et sommet 2 : " << tab_aretes[x][1];
-			cout << endl;
-		}
+			// On travaille sur les sommets reliant les arêtes du graphe
+			case 0:
+			{
+				numLigne = std::stoi(truncateS.at(3), &sz);
 
+				// --> Création du tableau des arêtes
+				int **tab_aretes = new int*[numLigne]; // on initialise un tableau pouvant contenir le nombre d'arête
+				numLigne = 0; // On remet le compteur de ligne à 0;
+
+				for (i; i < (int)monTableau.size(); i++) // On caste en (int) pour éviter un warning
+				{
+					truncateS = truncateString(monTableau.at(i), ' ');
+					tab_aretes[numLigne] = new int[2];
+					tab_aretes[numLigne][0] = std::stoi(truncateS.at(1), &sz);
+					tab_aretes[numLigne][1] = std::stoi(truncateS.at(2), &sz);
+					numLigne++;
+				}
+				for (int x = 0; x < numLigne; x++)
+				{
+					cout << x << " -> Sommets : " << tab_aretes[x][0] << " et " << tab_aretes[x][1];
+					cout << endl;
+				}
+				temp = tab_aretes;
+			}break;
+			case 1:
+			{
+				numLigne = std::stoi(truncateS.at(2), &sz);
+				
+				// Création du tableau des degrés des sommets
+				int **tab_degre = new int*[numLigne];
+				int sommet1 = 0;
+				int sommet2 = 0;
+				// ON aurait pu faire un tableau une dimension et utiliser les indices mais harmoniser les façons de procédé
+				
+				// On déclare un tableau de taille n (le nombre de sommets) et on initialise une case qui contiendra son degré
+				/// indice du tableau = sommet - 1 
+				/// on suppose que les sommets commençent à 1
+
+				for (int j = 0; j < numLigne; j++)
+				{
+					tab_degre[j] = new int[1];
+					tab_degre[j][0] = 0;
+				}
+					
+				for (i; i < (int)monTableau.size(); i++)
+				{
+					truncateS = truncateString(monTableau.at(i), ' ');
+					sommet1 = std::stoi(truncateS.at(1), &sz) - 1;
+					sommet2 = std::stoi(truncateS.at(2), &sz) - 1;
+					tab_degre[sommet1][0]++;
+					tab_degre[sommet2][0]++;
+				}
+				for (int x = 0; x < numLigne; x++)
+				{
+					cout << " Sommets  " << (x+1) << " : degre( " << tab_degre[x][0] << " )";
+					cout << endl;
+				}
+				temp = tab_degre;
+			}break;
+
+			default: 
+				cout << "AH AH ! Pauvre malheureux, tu t'es lourdement fourvoyé !" << endl; 	 
+		}
 		/*for (int i = 0 ; i < monTableau.size() ; i++)
 		{
 			truncateS = truncateString(monTableau.at(i), ' '); // decoupe de la chaine
@@ -74,7 +128,9 @@ void lireFichier(string nameFile)
 	}
 	else  // sinon
 		cerr << "Impossible d'ouvrir le fichier : " << nameFile << endl;
+	return temp;
 }
+
 
 /*
 	// Fonction qui tronque une chaîne de caractère donnée en paramètre
@@ -103,3 +159,5 @@ vector<string> truncateString(string s, char delim)
 
 	return res;
 }
+
+
