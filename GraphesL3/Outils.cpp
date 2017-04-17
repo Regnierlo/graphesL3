@@ -167,6 +167,13 @@ vector<string> truncateString(string s, char delim)
 	return res;
 }
 
+/*
+	// Enregistre les numéros des couleurs avec les sommets sous la forme : r n°Sommet  n°Couleur
+	//
+	// int* t -> tableau 1D avec les numéros des couleurs
+	// int size -> taille du tableau
+	// nameFile -> le nom du fichier .col 
+*/
 void sauvegarderFichier(int* t, int size, string nameFile)
 {
 	string nomFichier = "..\\FichiersRes\\";
@@ -177,7 +184,11 @@ void sauvegarderFichier(int* t, int size, string nameFile)
 
 	if (fichier)
 	{
-		fichier << "test fezze";
+		for (int i = 1; i <= size; i++)
+		{
+			fichier << "r " << i << ' ' << t[i-1] << '\n';
+		}
+
 		fichier.close();
 	}
 	else
