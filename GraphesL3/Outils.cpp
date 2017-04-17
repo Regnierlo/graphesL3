@@ -70,11 +70,11 @@ int** lireFichier(string nameFile, int quelTableau)
 					tab_aretes[numLigne][1] = std::stoi(truncateS.at(2), &sz);
 					numLigne++;
 				}
-				for (int x = 0; x < numLigne; x++)
+				/*for (int x = 0; x < numLigne; x++)
 				{
 					cout << x << " -> Sommets : " << tab_aretes[x][0] << " et " << tab_aretes[x][1];
 					cout << endl;
-				}
+				}*/
 				temp = tab_aretes;
 			}break;
 			case 1:
@@ -105,14 +105,21 @@ int** lireFichier(string nameFile, int quelTableau)
 					tab_degre[sommet1][0]++;
 					tab_degre[sommet2][0]++;
 				}
-				for (int x = 0; x < numLigne; x++)
+				/*for (int x = 0; x < numLigne; x++)
 				{
 					cout << " Sommets  " << (x+1) << " : degre( " << tab_degre[x][0] << " )";
 					cout << endl;
-				}
+				}*/
 				temp = tab_degre;
 			}break;
-
+			case 2:
+			{
+				int** information = new int*[0];
+				information[0] = new int[2];
+				information[0][0] = std::stoi(truncateS.at(2), &sz);
+				information[0][1] = std::stoi(truncateS.at(3), &sz);
+				temp = information;
+			}break;
 			default: 
 				cout << "AH AH ! Pauvre malheureux, tu t'es lourdement fourvoyé !" << endl; 	 
 		}

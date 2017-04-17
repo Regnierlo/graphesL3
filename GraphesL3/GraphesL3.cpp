@@ -6,10 +6,18 @@ using namespace std;
 
 int main(int argc, char **argv)
 {
-	int** tab_aretes;
-	int** tab_degre_sommet;
-	tab_aretes = lireFichier("..\\FichiersCol\\queen11_11.col", 0); // appel fonction dans outils.cpp
-	tab_degre_sommet = lireFichier("..\\FichiersCol\\queen11_11.col", 1); // appel fonction dans outils.cpp
+	string nomFichier = "..\\FichiersCol\\queen11_11.col";
+
+	/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
+	int** informationGraphe = lireFichier(nomFichier, 2);
+		int nbAretes = informationGraphe[0][1];
+		int nbSommets = informationGraphe[0][0];
+
+	/* Récupération des sommets reliant chaque arête du graphe */
+	int** tab_aretes = lireFichier(nomFichier, 0); // appel fonction dans outils.cpp;
+
+	/* Récupération du degré de chaque sommet du graphe */
+	int** tab_degre_sommet = lireFichier(nomFichier, 1);
 
 	return 0;
 }
