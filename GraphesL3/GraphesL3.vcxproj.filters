@@ -40,5 +40,8 @@
     <None Include="..\FichiersCol\queen11_11.col">
       <Filter>Fichiers col</Filter>
     </None>
+    <None Include="..\FichiersCol\test.col">
+      <Filter>Fichiers col</Filter>
+    </None>
   </ItemGroup>
 </Project>

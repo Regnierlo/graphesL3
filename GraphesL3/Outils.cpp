@@ -70,7 +70,7 @@ int** lireFichier(string nameFile, int quelTableau)
 					tab_aretes[numLigne][1] = std::stoi(truncateS.at(2), &sz);
 					numLigne++;
 				}
-				/*for (int x = 0; x < numLigne; x++)
+			/*	for (int x = 0; x < numLigne; x++)
 				{
 					cout << x << " -> Sommets : " << tab_aretes[x][0] << " et " << tab_aretes[x][1];
 					cout << endl;
