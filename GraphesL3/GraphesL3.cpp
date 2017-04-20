@@ -15,11 +15,14 @@ int main(int argc, char **argv)
 
 		static GraphesL3 g;
 		static string nomFichier;
-		static int size;
-		static int **t;
+		static int size; //nombre de sommets
+		static int **t; //tableau des colorations
 
 		//Thread 1 -> traitement du fichier
 		thread t1([]() {
+			//Interdit la sauvegarde tant que la coloration n'a pas commencé
+			g.interdireSauvegarde();
+
 			string nomFichier = "..\\FichiersCol\\queen11_11.col";
 			string test1 = "..\\FichiersCol\\test.col";
 			string test2 = "..\\FichiersCol\\queen11_11.col";
@@ -28,19 +31,24 @@ int main(int argc, char **argv)
 
 			string nomFichier = test4;
 			/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
-			/*int** informationGraphe = lireFichier(nomFichier, 2);
+			int** informationGraphe = lireFichier(nomFichier, 2);
 			int nbAretes = informationGraphe[0][1];
 			int nbSommets = informationGraphe[0][0];
-			*/
+			size = nbSommets;
+
 			/* Récupération des sommets reliant chaque arête du graphe */
-			//int** tab_aretes = lireFichier(nomFichier, 0); // appel fonction dans outils.cpp;
+			int** tab_aretes = lireFichier(nomFichier, 0); // appel fonction dans outils.cpp;
 
 			/* Récupération du degré de chaque sommet du graphe */
 			int** tab_degre_sommet = lireFichier(nomFichier, 1);
 			//rangementDegre(tab_degre_sommet, nbSommets,1);
+			
+			/*t=*/coloration(tab_aretes, tab_degre_sommet, nbAretes, nbSommets, 0);
 
-			coloration(tab_aretes, tab_degre_sommet, nbAretes, nbSommets, 0);
+			//Autorise la coloration
+			g.autoriserSauvegarde();
 	
+
 			for (int i = 0; i < nbSommets; i++)
 			{
 				free(tab_aretes[i]);
