@@ -27,8 +27,9 @@ int main(int argc, char **argv)
 			string test2 = "..\\FichiersCol\\queen11_11.col";
 			string test3 = "..\\FichiersCol\\queen12_12.col";
 			string test4 = "..\\FichiersCol\\test_leretour.col";
+			string test5 = "..\\FichiersCol\\queen14_14.col";
 
-			string nomFichier = test4;
+			string nomFichier = test5;
 
 			/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
 				int** informationGraphe = lireFichier(nomFichier, 2);
@@ -46,7 +47,8 @@ int main(int argc, char **argv)
 	
 
 		/* Coloration DSATUR */
-			int* coloration_sommet = coloration(tab_aretes, tab_degre_sommet, nbAretes, nbSommets, 1);
+			int* coloration_sommet = coloration(tab_aretes, tab_degre_sommet, nbAretes, nbSommets, 0);
+		
 			nbCouleurs = combienCouleur(nbSommets, coloration_sommet);
 			t = new int*[size];
 
@@ -70,29 +72,37 @@ int main(int argc, char **argv)
 				sommets_ordre_temp[i][0] = 0;
 				sommets_ordre_temp[i][1] = -1;
 			}
-			ordonnancement(nbSommets, sommets_ordonnes, sommets_ordre_temp);
+
+			
+			ordonnancement(nbSommets, coloration_sommet, sommets_ordonnes);
 
 			for (int i = 0; i < nbSommets; i++)
 			{
-				sommets_ordonnes[i][0] = sommets_ordre_temp[i][0];
-				sommets_ordonnes[i][1] = sommets_ordre_temp[i][1];
 				t[i][0] = sommets_ordonnes[i][0];
 				t[i][1] = sommets_ordonnes[i][1];
 			}
 
 			tab_permutations = lister_permutation(nbSommets, t);
-			affichage(nbSommets, t);
+		//	cout << endl;
+
+		//	cout << " -On ordonne pour une premiere fois le tableau des sommets et de leur couleur- " << endl;
+			//affichage(nbSommets, t);
 	
+		//	cout << endl;
 			//Autorise la coloration
 			g.autoriserSauvegarde();
 
-			permutation(nbSommets, nbCouleurs, sommets_ordonnes, sommets_ordre_temp, t, tab_permutations);
+			int** voisinnages = creerVoisinages(tab_aretes, nbAretes, nbSommets, nbSommets);
+		
+			permutation(nbSommets, nbCouleurs, sommets_ordonnes, sommets_ordre_temp, t, tab_permutations, voisinnages);
 
 			for (int i = 0; i < nbSommets; i++)
 			{
 				free(tab_aretes[i]);
 				free(tab_degre_sommet[i]);
 			}
+			free(tab_aretes);
+			free(tab_degre_sommet);
 			
 			//test de sauvegarde
 			/*for (int i = 0; i < 10000; i++)

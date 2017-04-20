@@ -88,6 +88,7 @@
   <ItemGroup>
     <None Include="..\FichiersCol\queen11_11.col" />
     <None Include="..\FichiersCol\queen12_12.col" />
+    <None Include="..\FichiersCol\queen14_14.col" />
     <None Include="..\FichiersCol\test.col" />
     <None Include="..\FichiersCol\test_leretour.col" />
   </ItemGroup>

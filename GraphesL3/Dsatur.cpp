@@ -61,7 +61,7 @@ int* coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 			couleur_sommet[indice_a_Colorier] = couleur_dernier_sommet;
 			sommet_Colorie = sommet_a_Colorier;
 
-			cout << "On colorie en premier le sommet " << sommet_Colorie << endl;
+			//cout << "On colorie en premier le sommet " << sommet_Colorie << endl;
 		// Mise à jour tableau DSAT
 			dsat_MAJ(couleur_dernier_sommet,sommet_Colorie, nbAretes, tabArete, dsat_sommet, degre_maximal+1, tabDegre);
 		
@@ -336,7 +336,7 @@ void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, 
 	{
 		inc++;
 	};
-
+	
 	int *tableau_temp = new int[inc];
 	for (int i = 0; i < (inc); i++)
 		tableau_temp[i] = dsat_trier[i];
@@ -344,6 +344,7 @@ void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, 
 	int *tableau_vide = new int[(inc-1)];
 	int variable_temp = 1;
 	int couleur_min = nbSommets;
+
 
 	for (int i = 0; i < (inc-1); i++)
 	{
@@ -361,7 +362,7 @@ void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, 
 		tableau_temp[variable_temp] = -2;
 		tableau_vide[i] = couleur_min;
 	}
-
+	
 	int thefuck = 0;
 	for (int i = 1; i < (inc); i++)
 	{
@@ -369,8 +370,7 @@ void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, 
 		dsat_trier[i] = thefuck;
 	}
 
-
-	cout << endl;
+	//cout << endl;
 	free(tableau_temp);
 	free(tableau_vide);
 	
@@ -419,9 +419,16 @@ int** rangementDegre(int** tabDegre, int nbSommets, int affichage)
 
 }
 
+
+
 int** lister_permutation(int nbSommets, int** sommets_ordonnes)
 {
-	int nbCouleurs = combienCouleur(nbSommets, sommets_ordonnes[1]);
+	int* couleurs = new int[nbSommets];
+	for (int i = 0; i < nbSommets; i++)
+		couleurs[i] = sommets_ordonnes[i][1];
+
+	int nbCouleurs = combienCouleur(nbSommets, couleurs);
+//	cout << "nb couleur" << nbCouleurs;
 	int nbPermutations = 0;
 	if (nbCouleurs == 2)
 		nbPermutations = 1;
@@ -429,7 +436,7 @@ int** lister_permutation(int nbSommets, int** sommets_ordonnes)
 	for (int i = (nbCouleurs - 1); i > 0; i--)
 		nbPermutations += i;
 
-	cout << "Le nombre de permutation sera " << nbPermutations << endl;
+//	cout << " - Le nombre de permutation sera " << nbPermutations << endl;
 	int** tab_permutations = new int*[nbPermutations];
 
 	for (int i = 0; i < nbPermutations; i++)
@@ -452,11 +459,12 @@ int** lister_permutation(int nbSommets, int** sommets_ordonnes)
 		variable_boucle = variable_temp;
 	}
 
-	affichage(nbPermutations, tab_permutations);
+	//affichage(nbPermutations, tab_permutations);
+	free(couleurs);
 	return tab_permutations;
 }
 
-void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp)
+void ordonnancement(int nbSommets, int* couleur, int** sommets_ordre_temp)
 {
 	bool* dejaFait = new bool[nbSommets];
 	int couleurMin = nbSommets;
@@ -468,9 +476,9 @@ void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_t
 	for (int i = 0; i < nbSommets; i++)
 	{
 		for (int j = 0; j < nbSommets; j++)
-		if (sommets_ordonnes[j][1] < couleurMin && !dejaFait[j])
+		if (couleur[j] < couleurMin && !dejaFait[j])
 		{
-			couleurMin = sommets_ordonnes[j][1];
+			couleurMin = couleur[j];
 			indice = j;
 		}
 		sommets_ordre_temp[i][0] = indice + 1;
@@ -481,8 +489,35 @@ void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_t
 	free(dejaFait);
 }
 
-void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations)
+void triTableauPermutation(int nbSommets, int** tableau, int** resultat)
 {
+	bool* dejaFait = new bool[nbSommets];
+	int couleurMin = nbSommets;
+	int indice = 0;
+	int sommet = 0;
+	for (int i = 0; i < nbSommets; i++)
+		dejaFait[i] = false;
+
+	for (int i = 0; i < nbSommets; i++)
+	{
+		for (int j = 0; j < nbSommets; j++)
+		if (tableau[j][1] < couleurMin && !dejaFait[j])
+		{
+			couleurMin = tableau[j][1];
+			sommet = tableau[j][0];
+			indice = j;
+		}
+		resultat[i][0] = sommet;
+		resultat[i][1] = couleurMin;
+		dejaFait[indice] = true;
+		couleurMin = nbSommets;
+	}
+	free(dejaFait);
+}
+
+void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations, int** voisinnage)
+{
+	
 	int couleur_a_permuter_1;
 	int couleur_a_permuter_2;
 	int nbCouleurs_nouveau;
@@ -493,10 +528,16 @@ void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, i
 	for (int i = (nbCouleurs_ancien - 1); i > 0; i--)
 		nbPermutations += i;
 
+	int** temp_ordonnes = new int*[nbSommets];
+	for (int i = 0; i < nbSommets; i++)
+		temp_ordonnes[i] = new int[2];
+
 	for (int permutation = 0; permutation < nbPermutations; permutation++)
 	{
 		couleur_a_permuter_1 = tab_permutations[permutation][0];
 		couleur_a_permuter_2 = tab_permutations[permutation][1];
+		//cout << "couleur a permuter " << couleur_a_permuter_1 << " et ";
+		//cout << "couleur a permuter " << tab_permutations[permutation][1] << endl;
 
 		for (int j = 0; j < nbSommets; j++)
 		{
@@ -511,25 +552,174 @@ void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, i
 				sommets_ordre_temp[j][1] = sommets_ordonnes[j][1];
 		}
 
-
+	//	affichage(nbSommets, sommets_ordre_temp);
+	//	cout << "Permutation numero " << permutation + 1 << " donne le tableau de coloration ordonne suivante :-> " << endl;
+		triTableauPermutation(nbSommets, sommets_ordre_temp, temp_ordonnes);
+		
+		//affichage(nbSommets, temp_ordonnes);
+	//	cout << endl;
 
 		/* TRAITEMENT A FAIRE */
-
-		cout << "PROUT PROUT PROULETTE " << endl;
+		int ** tableau_optimise;
+		tableau_optimise = optimisation(nbSommets, temp_ordonnes, voisinnage);
+		//affichage(nbSommets, tableau_optimise);
+		
+	//	affichage(nbSommets, temp_ordonnes);
 
 		/* TEST SI MEILLEURES OPTIMISATION */
+	//	affichage(nbSommets, tableau_optimise);
+		int* couleurs = new int[nbSommets];
+		for (int i = 0; i < nbSommets; i++)
+			couleurs[i] = tableau_optimise[i][1];
 
-		if (combienCouleur(nbSommets, sommets_ordre_temp[1]) < nbCouleurs_ancien)
+		if (combienCouleur(nbSommets, couleurs) < nbCouleurs_ancien)
 		{
-			nbCouleurs_nouveau = combienCouleur(nbSommets, sommets_ordre_temp[1]);
+			cout << "Optimisation possible avec ";
+			nbCouleurs_nouveau = combienCouleur(nbSommets, couleurs);
+
+			cout << nbCouleurs_nouveau << " au lieu de " << nbCouleurs_ancien << endl;
 			for (int fin = 0; fin < nbSommets; fin++)
 			{
-				ordre_optimise[fin][0] = sommets_ordre_temp[fin][0];
-				ordre_optimise[fin][1] = sommets_ordre_temp[fin][1];
+				ordre_optimise[fin][0] = tableau_optimise[fin][0];
+				ordre_optimise[fin][1] = tableau_optimise[fin][1];
 			}
+			nbCouleurs_ancien = nbCouleurs_nouveau;
 		}
+		free(couleurs);
 
 	}	
+}
+
+int** optimisation(int nbSommets, int** temp_ordonnes, int** voisinnage)
+{
+	int sommet_temp = 0;
+	int couleur_minimale = 0;
+	bool* dejaOptimal = new bool[nbSommets];
+	int** temp = new int*[nbSommets];
+	int sommet;
+	int couleur;
+	for (int i = 0; i < nbSommets; i++)
+	{
+		temp[i] = new int[2];
+		sommet = temp_ordonnes[i][0];
+		couleur = temp_ordonnes[i][1];
+		temp[i][0] = sommet;
+		temp[i][1] = couleur;
+	}
+
+	for (int i = 0; i < nbSommets; i++)
+	{
+
+		sommet_temp = temp_ordonnes[i][0];
+		couleur_minimale = couleurOptimisee(voisinnage[sommet_temp - 1], temp_ordonnes, sommet_temp, nbSommets);
+		//cout << "sommet " << sommet_temp << " : " << couleur_minimale << endl << endl << endl  ;
+		if (couleur_minimale == temp_ordonnes[i][1])
+			dejaOptimal[i] = true;
+		else
+			dejaOptimal[i] = false;
+		if (!dejaOptimal[i])
+			temp[i][1] = couleur_minimale;
+	}
+	free(dejaOptimal);
+	return temp;
+
+}
+
+int** creerVoisinages(int** tabAretes, int nbAretes, int nbSommets, int degreMax)
+{
+	int** voisinnages = new int*[nbSommets];
+	int temp = 0;
+	int inc = 1;
+	for (int i = 0; i < nbSommets; i++)
+		voisinnages[i] = new int[degreMax+1];
+
+	for (int i = 0; i < nbSommets; i++)
+		for (int j = 0; j < degreMax+1; j++)
+			voisinnages[i][j] = 0;
+
+	for (int i = 0; i < nbSommets; i++)
+	{
+		temp = 0;
+		inc = 1;
+		for (int j = 0; j < nbAretes; j++)
+		{
+			if (tabAretes[j][0] == (i + 1))
+			{
+				temp++;
+				voisinnages[i][inc] = tabAretes[j][1];
+				inc++;
+			}
+			else
+			if (tabAretes[j][1] == (i + 1))
+			{
+				temp++;
+				voisinnages[i][inc] = tabAretes[j][0];
+				inc++;
+			}
+
+		}
+		voisinnages[i][0] = temp;
+	}
+	return voisinnages;
+}
+
+int couleurOptimisee(int* voisinnage, int** sommets_ordre_temp, int sommet, int nbSommets)
+{
+	int* temp_couleur = new int[voisinnage[0]];
+	for (int i = 0; i < voisinnage[0]; i++)
+		temp_couleur[i] = -1;
+	bool trouve = false;
+	int inc = 0;
+	//cout << endl;
+	int truc = 0;
+	for (int i = 0; i < nbSommets; i++)
+	{
+		for (int j = 0; j < voisinnage[0]; j++)
+		{
+			if (sommets_ordre_temp[i][0] == voisinnage[(j + 1)] && !trouve)
+			{
+				truc = sommets_ordre_temp[i][1];
+				temp_couleur[inc] = truc;
+				//cout << temp_couleur[inc] << " ";
+				inc++;
+				trouve = true;
+				//cout << " voisin " << voisinnage[j + 1] << " couleur = " << sommets_ordre_temp[i][1] << endl;
+			}
+		}
+		trouve = false;
+	//	cout << endl;
+	}
+
+	inc = 0;
+	int couleur_optimale = 0;
+	/*for (int i = 0; i < voisinnage[0]; i++)
+		cout << temp_couleur[i] << " ";
+	cout << endl;*/
+	if (temp_couleur[0] > 1)
+	{
+		couleur_optimale = 1;
+	}
+		
+	else
+	{
+		while (!trouve && inc < voisinnage[0])
+		{
+			if ((temp_couleur[inc] + 1) == temp_couleur[inc + 1] || temp_couleur[inc] == temp_couleur[inc+1])
+			{
+				inc++;
+				//cout << "prout ";
+			}
+			else
+			{
+				couleur_optimale = temp_couleur[inc] + 1;
+				trouve = true;
+			}
+		};
+		//cout << endl;
+	}
+	//cout << "prout " << couleur_optimale << endl;
+	free(temp_couleur);
+	return couleur_optimale;
 }
 
 void affichage(int nb, int** tableau)

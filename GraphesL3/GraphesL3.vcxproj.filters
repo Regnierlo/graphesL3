@@ -32,10 +32,10 @@
     <ClInclude Include="Outils.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="Dsatur.h">
+    <ClInclude Include="GraphesL3.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
-    <ClInclude Include="GraphesL3.h">
+    <ClInclude Include="Dsatur.h">
       <Filter>Fichiers d%27en-tête</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,6 +50,9 @@
       <Filter>Fichiers col</Filter>
     </None>
     <None Include="..\FichiersCol\test_leretour.col">
+      <Filter>Fichiers col</Filter>
+    </None>
+    <None Include="..\FichiersCol\queen14_14.col">
       <Filter>Fichiers col</Filter>
     </None>
   </ItemGroup>
