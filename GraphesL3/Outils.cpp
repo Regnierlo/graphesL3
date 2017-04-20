@@ -174,7 +174,7 @@ vector<string> truncateString(string s, char delim)
 	// int size -> taille du tableau
 	// nameFile -> le nom du fichier .col 
 */
-void sauvegarderFichier(int* t, int size, string nameFile)
+void sauvegarderFichier(int** t, int size, string nameFile)
 {
 	string nomFichier = "..\\FichiersRes\\";
 	nomFichier += nameFile;
@@ -184,9 +184,9 @@ void sauvegarderFichier(int* t, int size, string nameFile)
 
 	if (fichier)
 	{
-		for (int i = 1; i <= size; i++)
+		for (int i = 0; i < size; i++)
 		{
-			fichier << "r " << i << ' ' << t[i-1] << '\n';
+			fichier << "r " << t[i][0] << ' ' << t[i][1] << '\n';
 		}
 
 		fichier.close();

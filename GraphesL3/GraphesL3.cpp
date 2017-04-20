@@ -14,6 +14,9 @@ int main(int argc, char **argv)
 	//Création des processus
 
 		static GraphesL3 g;
+		static string nomFichier;
+		static int size;
+		static int **t;
 
 		//Thread 1 -> traitement du fichier
 		thread t1([]() {
@@ -39,7 +42,7 @@ int main(int argc, char **argv)
 
 		//Thread 2 -> action utilisateur
 		thread t2([](){
-			g.actionUtilisateur();
+			g.sauvegardeDemandee(t, size, nomFichier);
 		});
 
 		t1.join();
@@ -59,7 +62,7 @@ void GraphesL3::interdireSauvegarde()
 	fin = true;
 }
 
-void GraphesL3::actionUtilisateur()
+void GraphesL3::sauvegardeDemandee(int **t, int size, string nomFichier)
 { 
 	//Tant qu'on ne dit pas que l'utilisateur ne peu plus sauvegarder on accepte la sauvegarde
 	while (!fin)
@@ -67,9 +70,8 @@ void GraphesL3::actionUtilisateur()
 		//Touche 'fin' pour pouvoir sauvegarder
 		if (GetAsyncKeyState(VK_END) != 0)
 		{
-			//Action de sauvegarde (modifer le for)
-			int t[] = { 1, 10, 2, 20, 3, 30 };
-			sauvegarderFichier(t,6,"blabla");
+				//Action de sauvegarde
+					sauvegarderFichier(t,size,nomFichier);
 		}
 		
 	}

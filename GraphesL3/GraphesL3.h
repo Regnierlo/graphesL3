@@ -5,5 +5,5 @@ private:
 public:
 	void autoriserSauvegarde();
 	void interdireSauvegarde();
-	void actionUtilisateur();
+	void sauvegardeDemandee(int **t, int size, string nomFichier);
 };
