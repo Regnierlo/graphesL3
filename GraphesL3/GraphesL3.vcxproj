@@ -86,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\FichiersCol\queen11_11.col" />
+    <None Include="..\FichiersCol\queen12_12.col" />
     <None Include="..\FichiersCol\test.col" />
+    <None Include="..\FichiersCol\test_leretour.col" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

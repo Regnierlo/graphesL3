@@ -44,26 +44,29 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 				couleur_sommet[i] = 0;
 
 				dsat_sommet[i] = new int[(degre_maximal+1)]; /// le nombre de couleur differentes des sommets adajcents peut être au maximum égal au nombre maximal de sommets adjacents
-				dsat_sommet[i][0] = 0;
+				dsat_sommet[i][0] = tabDegre[i][0];
 				for (int j = 1 ; j < (degre_maximal+1) ; j++)
 					dsat_sommet[i][j] = -1;
 			}
-	
+
 	
 	/* ETAPE 2 : colorer un sommet de degré maximum avec la couleur 1 */
 	
 		// Récupération du sommet à colorier
 			sommet_a_Colorier = degres_decroissant[0][0]; // ça marche
+			//cout << "sommet avec degre max " << sommet_a_Colorier << " avec degre = " << degres_decroissant[0][1] << endl;
 			indice_a_Colorier = sommet_a_Colorier - 1;
 		
 		// Coloration du sommet 
 			couleur_sommet[indice_a_Colorier] = couleur_dernier_sommet;
 			sommet_Colorie = sommet_a_Colorier;
 
+			cout << "On colorie en premier le sommet " << sommet_Colorie << endl;
 		// Mise à jour tableau DSAT
-			dsat_MAJ(couleur_dernier_sommet,sommet_Colorie, nbAretes, tabArete, dsat_sommet, degre_maximal+1);
+			dsat_MAJ(couleur_dernier_sommet,sommet_Colorie, nbAretes, tabArete, dsat_sommet, degre_maximal+1, tabDegre);
+		
 
-	/* ETAPES 3, 4 et 5 : en boucle tant que la coloration n'est pas finie  */
+	/* ETAPES 3, 4 et 5 : en boucle tant que la coloration n'est pas finie */
 
 		while (!fin_Coloration)
 		{
@@ -103,15 +106,16 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 						}
 				}
 			} /// On a trouvé le sommet à colorier
-			cout << "Sommet a colorier : " << sommet_a_Colorier << " (indice : " << indice_a_Colorier << ")" << endl;
-
+		//	cout << "Sommet a colorier : " << sommet_a_Colorier << " (indice : " << indice_a_Colorier << ")" << endl;
+		
 		/* ETAPE 4 : colorier ce sommet avec la plus petite couleur possible */
 
 			/// On cherche dans les sommets adjacents COLORIES au sommet que l'on va colorier quelle est la couleur la plus petite
-
+			
 				triCouleur(dsat_sommet[indice_a_Colorier], nbSommets);
+				
 				couleur_minimale = rechercheCouleur(dsat_sommet[indice_a_Colorier], degre_maximal + 1);
-				cout << "La plus petite couleur possible est : " << couleur_minimale << endl;
+			//	cout << "La plus petite couleur possible est : " << couleur_minimale << endl;
 
 			/// Coloration du sommet 
 				couleur_sommet[indice_a_Colorier] = couleur_minimale;
@@ -119,8 +123,8 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 				sommet_Colorie = sommet_a_Colorier;
 
 			/// Mise à jour tableau DSAT
-				dsat_MAJ(couleur_dernier_sommet, sommet_Colorie, nbAretes, tabArete, dsat_sommet, degre_maximal+1);
-				
+				dsat_MAJ(couleur_dernier_sommet, sommet_Colorie, nbAretes, tabArete, dsat_sommet, degre_maximal+1, tabDegre);
+		
 		/* ETAPE 5 : on vérifie si tous les sommets ont été coloriés */
 			
 			nb_restant = 0;
@@ -131,16 +135,17 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 			}
 			if (nb_restant == 0)
 				fin_Coloration = true;
-			else
-				cout << "Il reste " << nb_restant << " sommets a colorier" << endl;
+		//	else
+			//	cout << "Il reste " << nb_restant << " sommets a colorier" << endl;
+			
 		};
 
 		nbCouleurs = combienCouleur(nbSommets, couleur_sommet);
 		cout << endl << "La fin de la coloration a ete atteinte avec " << nbCouleurs << " couleurs differentes." << endl;
 
-		for (int i = 0; i < nbSommets; i++)
-			cout << endl << "sommet " << i+1 << " = couleur( " << couleur_sommet[i] << ")" << endl;
-
+	//	for (int i = 0; i < nbSommets; i++)
+		//	cout << endl << "sommet " << i+1 << " = couleur( " << couleur_sommet[i] << " )" << endl;
+		 
 	/// Si AFFICHAGE TABLEAU DSATUR SELECTIONNE
 
 	if (affichage == 1)
@@ -154,6 +159,8 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 			cout << endl << endl;
 		}
 	}
+
+	permutation(couleur_sommet, nbSommets);
 
 	for (int i = 0; i < nbSommets; i++)
 		free(degres_decroissant[i]);
@@ -170,7 +177,7 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 int combienCouleur(int nbSommets, int* couleurSommet)
 {
 	int* temp = new int[nbSommets+2];
-	int nb = 1;
+	int nb = 0;
 	temp[0] = nbSommets;
 	temp[nbSommets + 1] = -1;
 	for (int i = 1; i < nbSommets+1; i++)
@@ -199,9 +206,8 @@ int combienCouleur(int nbSommets, int* couleurSommet)
 	Ainsi, on trouve tous les sommets adjacents du sommet que l'on vient de colorier
 		---> si ceux-ci n'ont pas déjà un sommet adjacent de même couleur on augmente leur degré de saturation et on ajoute la couleur
 */
-void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int** dsat_sommet, int degreMax)
+void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int** dsat_sommet, int degreMax, int** tabDegre)
 {
-	
 	// Mise à jour du tableau gérant le degré de saturation
 	/// On récupère grâce au tableau gérant les sommets reliant les arêtes les sommets adjacents au sommet colorié
 	int inc = 1;
@@ -218,14 +224,17 @@ void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int
 				indice_sommet_dsat += tabArete[i][1];
 			else
 				indice_sommet_dsat += tabArete[i][0];
+			
 			inc = 1;
 			mis = false;
-			//cout << "indice " << indice_sommet_dsat << " et sommet colorie " << sommet_Colorie << endl;
+		//	cout << "sommet adjacent " << indice_sommet_dsat+1 << " et sommet colorie " << sommet_Colorie << endl;
 			do
 			{
 				if (dsat_sommet[indice_sommet_dsat][inc] == -1 && !couleurDejaMise(dsat_sommet[indice_sommet_dsat], couleur, degreMax))
 				{
 					dsat_sommet[indice_sommet_dsat][0]++;
+					if (dsat_sommet[indice_sommet_dsat][0] > tabDegre[indice_sommet_dsat][0])
+						dsat_sommet[indice_sommet_dsat][0] = 1;
 					dsat_sommet[indice_sommet_dsat][inc] = couleur;
 					mis = true;}
 				else
@@ -233,8 +242,6 @@ void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int
 			} while (!mis && inc < degreMax);
 		}
 	}
-	
-
 }
 
 
@@ -246,14 +253,16 @@ void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int
 		- de la couleur que l'on veut vérifier parmi les sommets adjacents
 		- du nombre de sommets adjacents max
 */
-
 bool couleurDejaMise(int* dsat, int couleurAVerifier,  int degreMax)
 {
 	bool temp = false;
-	int j = 0;
+	int j = 1;
 	do{
 		if (dsat[j] == couleurAVerifier)
+		{
 			temp = true;
+		}
+			
 		j++;
 	} while (dsat[j] != -1 && j < degreMax && !temp);
 	return temp;
@@ -302,6 +311,8 @@ int rechercheCouleur(int* dsat, int nb_sommets_max)
 		else
 		{
 			temp = dsat[j] + 1;
+			if (temp == 0)
+				temp++;
 			trouve = true;
 		}
 	}
@@ -316,11 +327,13 @@ int rechercheCouleur(int* dsat, int nb_sommets_max)
 */
 void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, nb couleur max = nombre sommet max
 {
+
 	int inc = 1;
 	while (dsat_trier[inc] != -1)
 	{
 		inc++;
 	};
+
 	int *tableau_temp = new int[inc];
 	for (int i = 0; i < (inc); i++)
 		tableau_temp[i] = dsat_trier[i];
@@ -353,11 +366,12 @@ void triCouleur(int* dsat_trier, int nbSommets) /// dsat, indice sommet a trie, 
 		dsat_trier[i] = thefuck;
 	}
 
+
+	cout << endl;
 	free(tableau_temp);
 	free(tableau_vide);
 	
 }
-
 
 /*
 	Fonction qui permet d'ordonner les sommets par ordre décroissant de degrés
@@ -401,3 +415,72 @@ int** rangementDegre(int** tabDegre, int nbSommets, int affichage)
 	return temp;
 
 }
+
+void permutation(int* couleur, int nbSommets)
+{
+	// ETAPE 1 : on ordonne le tableau des sommets en fonction de leur couleur
+
+		int** sommets_ordonnes = new int*[nbSommets];
+		bool* dejaFait = new bool[nbSommets];
+		int couleurMin = nbSommets;
+		int indice = 0;
+		for (int i = 0; i < nbSommets; i++)
+		{
+			sommets_ordonnes[i] = new int[2];
+			sommets_ordonnes[i][0] = 0;
+			sommets_ordonnes[i][1] = -1;
+			dejaFait[i] = false;
+		}
+		for (int i = 0; i < nbSommets; i++)
+		{
+			for (int j = 0; j < nbSommets; j++)
+				if (couleur[j] < couleurMin && !dejaFait[j])
+				{
+					couleurMin = couleur[j];
+					indice = j;
+				}
+			sommets_ordonnes[i][0] = indice + 1;
+			sommets_ordonnes[i][1] = couleurMin;
+			dejaFait[indice] = true;
+			couleurMin = nbSommets;
+		}
+		for (int i = 0; i < nbSommets; i++)
+			cout << " sommet " << sommets_ordonnes[i][0] << " -> couleur " << sommets_ordonnes[i][1] << endl;
+		cout << endl;
+	
+	// ETAPE 2 : permutation des couleurs
+		/// On récupère le nombre de couleurs
+		int nbCouleurs = combienCouleur(nbSommets, sommets_ordonnes[1]);
+		int nbPermutations = 0;
+		if (nbCouleurs == 2)
+			nbPermutations = 1;
+		
+		else
+		{
+			for (int i = (nbCouleurs-1); i > 0; i--)
+			{
+				nbPermutations += i;
+			}
+			cout << "Le nombre de permutation sera " << nbPermutations << endl;
+		}
+		int** tab_permutations = new int*[nbPermutations];
+		int temp = 0;
+		for (int i = 0; i < nbPermutations; i++)
+			tab_permutations[i] = new int[2];
+
+		int truc = 0;
+		
+
+		for (int i = 0; i < nbPermutations; i++)
+		{
+			cout << tab_permutations[i][0] << " <-> " << tab_permutations[i][1] << endl;
+			free(tab_permutations[i]);
+		}
+	
+}
+
+void listePermutation(int nbCouleur)
+{
+
+}
+

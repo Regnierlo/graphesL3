@@ -12,4 +12,5 @@ int rechercheDegre(int** tabDegreDecroissant, int sommetATrouve, int nbSommets);
 void triCouleur(int* dsat_a_trier, int nbSommets);
 bool couleurDejaMise(int* dsat, int couleurAVerifier, int degreMax);
 int combienCouleur(int nbSommets, int* couleurSommet);
-void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int** dsat_sommet, int degreMax);
+void permutation(int* couleur, int nbSommets);
+void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int** dsat_sommet, int degreMax, int** tabDegre);
