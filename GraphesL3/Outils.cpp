@@ -167,4 +167,32 @@ vector<string> truncateString(string s, char delim)
 	return res;
 }
 
+/*
+	// Enregistre les numéros des couleurs avec les sommets sous la forme : r n°Sommet  n°Couleur
+	//
+	// int* t -> tableau 1D avec les numéros des couleurs
+	// int size -> taille du tableau
+	// nameFile -> le nom du fichier .col 
+*/
+void sauvegarderFichier(int** t, int size, string nameFile)
+{
+	string nomFichier = "..\\FichiersRes\\";
+	nomFichier += nameFile;
+	nomFichier += ".res";
 
+	ofstream fichier(nomFichier, ios::out | ios::trunc);
+
+	if (fichier)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			fichier << "r " << t[i][0] << ' ' << t[i][1] << '\n';
+		}
+
+		fichier.close();
+	}
+	else
+	{
+		cerr << "Impossible d'ouvrir le fichier !" << endl;
+	}
+}
