@@ -48,10 +48,13 @@ int main(int argc, char **argv)
 			}
 			//int** tab_degre_sommet = lireFichier(nomFichier, 1);
 			
-			for (int i = 0; i < 10000; i++)
+			//test de sauvegarde
+			/*for (int i = 0; i < 10000; i++)
 			{
 				cout << "Thread 1 : " << i << endl;
-			}
+			}*/
+
+
 			g.interdireSauvegarde();
 		});
 
