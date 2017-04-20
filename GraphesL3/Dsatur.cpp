@@ -3,7 +3,7 @@
 /*
 	Coloration DSATUR
 */
-void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int affichage)
+int* coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int affichage)
 {
 	// TABLEAUX
 
@@ -160,12 +160,15 @@ void coloration(int** tabArete, int** tabDegre, int nbAretes, int nbSommets, int
 		}
 	}
 
-	permutation(couleur_sommet, nbSommets);
-
 	for (int i = 0; i < nbSommets; i++)
+	{
 		free(degres_decroissant[i]);
+		dsat_sommet[i];
+	}	
 	free(degres_decroissant);
+	free(dsat_sommet);
 	
+	return couleur_sommet;
 }
 
 
@@ -416,71 +419,99 @@ int** rangementDegre(int** tabDegre, int nbSommets, int affichage)
 
 }
 
-void permutation(int* couleur, int nbSommets)
+
+int** lister_permutation(int nbSommets, int** sommets_ordonnes)
+{
+	int nbCouleurs = combienCouleur(nbSommets, sommets_ordonnes[1]);
+	int nbPermutations = 0;
+	if (nbCouleurs == 2)
+		nbPermutations = 1;
+	else
+	for (int i = (nbCouleurs - 1); i > 0; i--)
+		nbPermutations += i;
+
+	cout << "Le nombre de permutation sera " << nbPermutations << endl;
+	int** tab_permutations = new int*[nbPermutations];
+
+	for (int i = 0; i < nbPermutations; i++)
+		tab_permutations[i] = new int[2];
+
+	int variable_temp = 0;
+	int variable_boucle = 0;
+	int j = 0;
+	for (int i = 0; i < nbCouleurs; i++)
+	{
+		variable_temp += (nbCouleurs - (i + 1));
+		j = i + 2;
+		/// On aura (nbCouleurs-1) boucles en tout
+		for (variable_boucle; variable_boucle < variable_temp; variable_boucle++)
+		{
+			tab_permutations[variable_boucle][0] = i + 1;
+			tab_permutations[variable_boucle][1] = j;
+			j++;
+		}
+		variable_boucle = variable_temp;
+	}
+	return tab_permutations;
+}
+
+void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp)
 {
 	// ETAPE 1 : on ordonne le tableau des sommets en fonction de leur couleur
 
-		int** sommets_ordonnes = new int*[nbSommets];
-		bool* dejaFait = new bool[nbSommets];
-		int couleurMin = nbSommets;
-		int indice = 0;
-		for (int i = 0; i < nbSommets; i++)
+	bool* dejaFait = new bool[nbSommets];
+	int couleurMin = nbSommets;
+	int indice = 0;
+	for (int i = 0; i < nbSommets; i++)
+	{
+		dejaFait[i] = false;
+	}
+	for (int i = 0; i < nbSommets; i++)
+	{
+		for (int j = 0; j < nbSommets; j++)
+		if (sommets_ordonnes[j][1] < couleurMin && !dejaFait[j])
 		{
-			sommets_ordonnes[i] = new int[2];
-			sommets_ordonnes[i][0] = 0;
-			sommets_ordonnes[i][1] = -1;
-			dejaFait[i] = false;
+			couleurMin = sommets_ordonnes[j][1];
+			indice = j;
 		}
-		for (int i = 0; i < nbSommets; i++)
-		{
-			for (int j = 0; j < nbSommets; j++)
-				if (couleur[j] < couleurMin && !dejaFait[j])
-				{
-					couleurMin = couleur[j];
-					indice = j;
-				}
-			sommets_ordonnes[i][0] = indice + 1;
-			sommets_ordonnes[i][1] = couleurMin;
-			dejaFait[indice] = true;
-			couleurMin = nbSommets;
-		}
-		for (int i = 0; i < nbSommets; i++)
-			cout << " sommet " << sommets_ordonnes[i][0] << " -> couleur " << sommets_ordonnes[i][1] << endl;
-		cout << endl;
-	
-	// ETAPE 2 : permutation des couleurs
-		/// On récupère le nombre de couleurs
-		int nbCouleurs = combienCouleur(nbSommets, sommets_ordonnes[1]);
-		int nbPermutations = 0;
-		if (nbCouleurs == 2)
-			nbPermutations = 1;
-		
-		else
-		{
-			for (int i = (nbCouleurs-1); i > 0; i--)
-			{
-				nbPermutations += i;
-			}
-			cout << "Le nombre de permutation sera " << nbPermutations << endl;
-		}
-		int** tab_permutations = new int*[nbPermutations];
-		int temp = 0;
-		for (int i = 0; i < nbPermutations; i++)
-			tab_permutations[i] = new int[2];
-
-		int truc = 0;
-		
-
-		for (int i = 0; i < nbPermutations; i++)
-		{
-			cout << tab_permutations[i][0] << " <-> " << tab_permutations[i][1] << endl;
-			free(tab_permutations[i]);
-		}
-	
+		sommets_ordre_temp[i][0] = indice + 1;
+		sommets_ordre_temp[i][1] = couleurMin;
+		dejaFait[indice] = true;
+		couleurMin = nbSommets;
+	}
+	for (int i = 0; i < nbSommets; i++)
+		cout << " sommet " << sommets_ordre_temp[i][0] << " -> couleur " << sommets_ordre_temp[i][1] << endl;
+	cout << endl;
+	free(dejaFait);
 }
 
-void listePermutation(int nbCouleur)
+void permutation(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations)
 {
+	int couleur_a_permuter_1;
+	int couleur_a_permuter_2;
+
+	/// Première permutation
+	int permutation = 0;
+
+	couleur_a_permuter_1 = tab_permutations[permutation][0];
+	couleur_a_permuter_2 = tab_permutations[permutation][1];
+
+	for (int j = 0; j < nbSommets; j++)
+	{
+		sommets_ordre_temp[j][0] = sommets_ordonnes[j][0];
+		if (sommets_ordonnes[j][1] == couleur_a_permuter_1)
+			sommets_ordre_temp[j][1] = couleur_a_permuter_2;
+
+		else
+		if (sommets_ordonnes[j][1] == couleur_a_permuter_2)
+			sommets_ordre_temp[j][1] = couleur_a_permuter_1;
+		else
+			sommets_ordre_temp[j][1] = sommets_ordonnes[j][1];
+	}
+
+	for (int i = 0; i < nbSommets; i++)
+		cout << " sommet temp " << sommets_ordre_temp[i][0] << " -> couleur " << sommets_ordre_temp[i][1] << endl;
+	cout << endl;
+
 
 }
-
