@@ -419,7 +419,6 @@ int** rangementDegre(int** tabDegre, int nbSommets, int affichage)
 
 }
 
-
 int** lister_permutation(int nbSommets, int** sommets_ordonnes)
 {
 	int nbCouleurs = combienCouleur(nbSommets, sommets_ordonnes[1]);
@@ -452,13 +451,13 @@ int** lister_permutation(int nbSommets, int** sommets_ordonnes)
 		}
 		variable_boucle = variable_temp;
 	}
+
+	affichage(nbPermutations, tab_permutations);
 	return tab_permutations;
 }
 
 void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp)
 {
-	// ETAPE 1 : on ordonne le tableau des sommets en fonction de leur couleur
-
 	bool* dejaFait = new bool[nbSommets];
 	int couleurMin = nbSommets;
 	int indice = 0;
@@ -479,39 +478,63 @@ void ordonnancement(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_t
 		dejaFait[indice] = true;
 		couleurMin = nbSommets;
 	}
-	for (int i = 0; i < nbSommets; i++)
-		cout << " sommet " << sommets_ordre_temp[i][0] << " -> couleur " << sommets_ordre_temp[i][1] << endl;
-	cout << endl;
 	free(dejaFait);
 }
 
-void permutation(int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations)
+void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations)
 {
 	int couleur_a_permuter_1;
 	int couleur_a_permuter_2;
+	int nbCouleurs_nouveau;
+	int nbPermutations = 0;
+	if (nbCouleurs_ancien == 2)
+		nbPermutations = 1;
+	else
+	for (int i = (nbCouleurs_ancien - 1); i > 0; i--)
+		nbPermutations += i;
 
-	/// Première permutation
-	int permutation = 0;
-
-	couleur_a_permuter_1 = tab_permutations[permutation][0];
-	couleur_a_permuter_2 = tab_permutations[permutation][1];
-
-	for (int j = 0; j < nbSommets; j++)
+	for (int permutation = 0; permutation < nbPermutations; permutation++)
 	{
-		sommets_ordre_temp[j][0] = sommets_ordonnes[j][0];
-		if (sommets_ordonnes[j][1] == couleur_a_permuter_1)
-			sommets_ordre_temp[j][1] = couleur_a_permuter_2;
+		couleur_a_permuter_1 = tab_permutations[permutation][0];
+		couleur_a_permuter_2 = tab_permutations[permutation][1];
 
-		else
-		if (sommets_ordonnes[j][1] == couleur_a_permuter_2)
-			sommets_ordre_temp[j][1] = couleur_a_permuter_1;
-		else
-			sommets_ordre_temp[j][1] = sommets_ordonnes[j][1];
-	}
+		for (int j = 0; j < nbSommets; j++)
+		{
+			sommets_ordre_temp[j][0] = sommets_ordonnes[j][0];
+			if (sommets_ordonnes[j][1] == couleur_a_permuter_1)
+				sommets_ordre_temp[j][1] = couleur_a_permuter_2;
 
-	for (int i = 0; i < nbSommets; i++)
-		cout << " sommet temp " << sommets_ordre_temp[i][0] << " -> couleur " << sommets_ordre_temp[i][1] << endl;
+			else
+			if (sommets_ordonnes[j][1] == couleur_a_permuter_2)
+				sommets_ordre_temp[j][1] = couleur_a_permuter_1;
+			else
+				sommets_ordre_temp[j][1] = sommets_ordonnes[j][1];
+		}
+
+
+
+		/* TRAITEMENT A FAIRE */
+
+		cout << "PROUT PROUT PROULETTE " << endl;
+
+		/* TEST SI MEILLEURES OPTIMISATION */
+
+		if (combienCouleur(nbSommets, sommets_ordre_temp[1]) < nbCouleurs_ancien)
+		{
+			nbCouleurs_nouveau = combienCouleur(nbSommets, sommets_ordre_temp[1]);
+			for (int fin = 0; fin < nbSommets; fin++)
+			{
+				ordre_optimise[fin][0] = sommets_ordre_temp[fin][0];
+				ordre_optimise[fin][1] = sommets_ordre_temp[fin][1];
+			}
+		}
+
+	}	
+}
+
+void affichage(int nb, int** tableau)
+{
+	for (int i = 0; i < nb; i++)
+		cout << " sommet " << tableau[i][0] << " -> couleur " << tableau[i][1] << endl;
 	cout << endl;
-
-
 }
