@@ -14,6 +14,9 @@ int main(int argc, char **argv)
 	//Création des processus
 
 		static GraphesL3 g;
+		static string nomFichier;
+		static int size;
+		static int **t;
 
 		//Thread 1 -> traitement du fichier
 		thread t1([]() {
@@ -25,12 +28,12 @@ int main(int argc, char **argv)
 
 			string nomFichier = test4;
 			/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
-			int** informationGraphe = lireFichier(nomFichier, 2);
-				int nbAretes = informationGraphe[0][1];
-				int nbSommets = informationGraphe[0][0];
-
+			/*int** informationGraphe = lireFichier(nomFichier, 2);
+			int nbAretes = informationGraphe[0][1];
+			int nbSommets = informationGraphe[0][0];
+			*/
 			/* Récupération des sommets reliant chaque arête du graphe */
-			int** tab_aretes = lireFichier(nomFichier, 0); // appel fonction dans outils.cpp;
+			//int** tab_aretes = lireFichier(nomFichier, 0); // appel fonction dans outils.cpp;
 
 			/* Récupération du degré de chaque sommet du graphe */
 			int** tab_degre_sommet = lireFichier(nomFichier, 1);
@@ -43,12 +46,18 @@ int main(int argc, char **argv)
 				free(tab_aretes[i]);
 				free(tab_degre_sommet[i]);
 			}
+			//int** tab_degre_sommet = lireFichier(nomFichier, 1);
+			
+			for (int i = 0; i < 10000; i++)
+			{
+				cout << "Thread 1 : " << i << endl;
+			}
 			g.interdireSauvegarde();
 		});
 
 		//Thread 2 -> action utilisateur
 		thread t2([](){
-			g.actionUtilisateur();
+			g.sauvegardeDemandee(t, size, nomFichier);
 		});
 
 		t1.join();
@@ -68,21 +77,16 @@ void GraphesL3::interdireSauvegarde()
 	fin = true;
 }
 
-void GraphesL3::actionUtilisateur()
+void GraphesL3::sauvegardeDemandee(int **t, int size, string nomFichier)
 {
-	int nb = 1000;
-
 	//Tant qu'on ne dit pas que l'utilisateur ne peu plus sauvegarder on accepte la sauvegarde
 	while (!fin)
 	{
 		//Touche 'fin' pour pouvoir sauvegarder
 		if (GetAsyncKeyState(VK_END) != 0)
 		{
-			//Action de sauvegarde (modifer le for)
-			for (int i = 0; i < nb; i++)
-			{
-				cout << i << endl;
-			}
+				//Action de sauvegarde
+					sauvegarderFichier(t,size,nomFichier);
 		}
 		
 	}
