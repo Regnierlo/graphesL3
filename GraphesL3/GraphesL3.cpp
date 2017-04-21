@@ -8,15 +8,23 @@
 
 using namespace std;
 
+static GraphesL3 g;
+static string nomFichier;
+static int size; //nombre de sommets
+static int **t; //tableau des colorations
 
 int main(int argc, char **argv)
 {
 	//Création des processus
 
-		static GraphesL3 g;
-		static string nomFichier;
-		static int size; //nombre de sommets
-		static int **t; //tableau des colorations
+		
+
+
+		//Thread 2 -> action utilisateur
+		thread t2([](){
+			g.sauvegardeDemandee(/*t, size, nomFichier*/);
+		});
+
 
 		//Thread 1 -> traitement du fichier
 		thread t1([]() {
@@ -29,7 +37,7 @@ int main(int argc, char **argv)
 			string test4 = "..\\FichiersCol\\test_leretour.col";
 			string test5 = "..\\FichiersCol\\queen14_14.col";
 
-			string nomFichier = test5;
+			nomFichier = test5;
 
 			/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
 				int** informationGraphe = lireFichier(nomFichier, 2);
@@ -112,15 +120,12 @@ int main(int argc, char **argv)
 
 
 			g.interdireSauvegarde();
+			g.finProg();
 		});
 
-		//Thread 2 -> action utilisateur
-		thread t2([](){
-			g.sauvegardeDemandee(t, size, nomFichier);
-		});
-
-		t1.join();
+		
 		t2.join();
+		t1.join();
 
 	return 0;
 }
@@ -128,25 +133,34 @@ int main(int argc, char **argv)
 //Fonction privée
 void GraphesL3::autoriserSauvegarde()
 {
-	fin = false;
+	peutSauvegarder = true;
 }
 
 void GraphesL3::interdireSauvegarde()
 {
+	peutSauvegarder = false;
+}
+
+void GraphesL3::finProg()
+{
 	fin = true;
 }
 
-void GraphesL3::sauvegardeDemandee(int **t, int size, string nomFichier)
+void GraphesL3::sauvegardeDemandee(/*int **t, int size, string nomFichier*/)
 {
 	//Tant qu'on ne dit pas que l'utilisateur ne peu plus sauvegarder on accepte la sauvegarde
 	while (!fin)
 	{
-		//Touche 'fin' pour pouvoir sauvegarder
-		if (GetAsyncKeyState(VK_END) != 0)
+		while (peutSauvegarder)
 		{
+			cout << "while save" << endl;
+			//Touche 'fin' pour pouvoir sauvegarder
+			if (GetAsyncKeyState(VK_END) != 0)
+			{
 				//Action de sauvegarde
-					sauvegarderFichier(t,size,nomFichier);
+				cout << "save" << endl;
+				sauvegarderFichier(t, size, nomFichier);
+			}
 		}
-		
 	}
 }
