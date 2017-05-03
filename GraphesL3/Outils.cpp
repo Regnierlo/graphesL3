@@ -176,11 +176,7 @@ vector<string> truncateString(string s, char delim)
 */
 void sauvegarderFichier(int** t, int size, string nameFile)
 {
-	string nomFichier = "..\\FichiersRes\\";
-	nomFichier += nameFile;
-	nomFichier += ".res";
-
-	ofstream fichier(nomFichier, ios::out | ios::trunc);
+	ofstream fichier(nameFile+".res", ios::out | ios::trunc);
 
 	if (fichier)
 	{
