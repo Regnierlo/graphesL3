@@ -86,8 +86,11 @@
     <ClInclude Include="Outils.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\FichiersCol\anna.col" />
+    <None Include="..\FichiersCol\le450_25a.col" />
     <None Include="..\FichiersCol\queen11_11.col" />
     <None Include="..\FichiersCol\queen12_12.col" />
+    <None Include="..\FichiersCol\queen13_13.col" />
     <None Include="..\FichiersCol\queen14_14.col" />
     <None Include="..\FichiersCol\test.col" />
     <None Include="..\FichiersCol\test_leretour.col" />

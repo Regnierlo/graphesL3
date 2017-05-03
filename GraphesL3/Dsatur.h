@@ -15,7 +15,7 @@ int combienCouleur(int nbSommets, int* couleurSommet);
 
 void glouton(int* couleur, int nbSommets, int** sommets_ordonnes, int** sommets_ordre_temp);
 void ordonnancement(int nbSommets, int* couleur, int** sommets_ordre_temp);
-void permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations, int** voisinnage);
+int permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, int** sommets_ordre_temp, int** ordre_optimise, int** tab_permutations, int** voisinnage);
 int couleurOptimisee(int* voisinnage, int** sommets_ordre_temp, int sommet, int nbSommets);
 void dsat_MAJ(int couleur, int sommet_Colorie, int nbAretes, int** tabArete, int** dsat_sommet, int degreMax, int** tabDegre);
 int** creerVoisinages(int** tabAretes, int nbAretes, int nbSommets, int degreMax);

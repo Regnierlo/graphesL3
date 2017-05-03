@@ -55,5 +55,14 @@
     <None Include="..\FichiersCol\queen14_14.col">
       <Filter>Fichiers col</Filter>
     </None>
+    <None Include="..\FichiersCol\anna.col">
+      <Filter>Fichiers col</Filter>
+    </None>
+    <None Include="..\FichiersCol\le450_25a.col">
+      <Filter>Fichiers col</Filter>
+    </None>
+    <None Include="..\FichiersCol\queen13_13.col">
+      <Filter>Fichiers col</Filter>
+    </None>
   </ItemGroup>
 </Project>
