@@ -620,6 +620,7 @@ int permutation(int nbSommets, int nbCouleurs_ancien, int** sommets_ordonnes, in
 	//	for (int i = 0; i < nbSommets; i++)
 		//	cout << couleurs[i] << endl;
 
+		cout << "Tentative d'optimiser n " << permutation << " = new(" << combienCouleur(nbSommets, couleurs) << ") vs old(" << nbCouleurs_ancien << ")" << endl;
 		if (combienCouleur(nbSommets, couleurs) < nbCouleurs_ancien)
 		{
 			cout << "Optimisation possible avec ";

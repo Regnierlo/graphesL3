@@ -7,4 +7,6 @@ public:
 	void interdireSauvegarde();
 	void sauvegardeDemandee(/*int **t, int size, string nomFichier*/);
 	void finProg();
+
+
 };

@@ -10,19 +10,12 @@ using namespace std;
 
 static GraphesL3 g;
 static string nomFichier;
-static int size; //nombre de sommets
+static int nbSommets; //nombre de sommets
 static int **t; //tableau des colorations
 
 int main(int argc, char **argv)
 {
 	//Création des processus
-
-		static GraphesL3 g;
-		static string nomFichier;
-		static int nbSommets;				// nombre de sommets
-		static int **t;					// tableau des colorations
-
-
 
 		//Thread 2 -> action utilisateur
 		thread t2([](){
@@ -45,7 +38,7 @@ int main(int argc, char **argv)
 			string test7 = "..\\FichiersCol\\queen13_13.col"; // INTERNET : 13, DSATUR : 19, AMELIORATION POSSIBLE de 18
 			string test8 = "..\\FichiersCol\\le450_25a.col"; // INTERNET : 25, DSATUR : 25, PAS D'AMELIORATION POSSIBLE
 
-			string nomFichier = test7;
+			nomFichier = test7;
 
 			/* Récupération des informations du graphe : le nombre d'arêtes et le nombre de sommets */
 				int** informationGraphe = lireFichier(nomFichier, 2);
@@ -166,13 +159,13 @@ void GraphesL3::sauvegardeDemandee(/*int **t, int size, string nomFichier*/)
 	{
 		while (peutSauvegarder)
 		{
-			cout << "while save" << endl;
+			//cout << "while save" << endl;
 		//Touche 'fin' pour pouvoir sauvegarder
 		if (GetAsyncKeyState(VK_END) != 0)
 		{
 				//Action de sauvegarde
 				cout << "save" << endl;
-				sauvegarderFichier(t, size, nomFichier);
+				sauvegarderFichier(t, nbSommets, nomFichier);
 			}
 		}
 	}
